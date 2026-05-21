@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nutrione Admin — 광고비 마감</title>
+  <title>FA Admin — 광고비 마감</title>
   <script src="https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <script>
     
@@ -144,7 +144,7 @@
 <header>
   <div class="logo">
     <div class="logo-icon">N</div>
-    <span class="logo-text">Nutrione Admin</span>
+    <span class="logo-text">FA Admin</span>
   </div>
   <nav><span>광고비 마감</span></nav>
 </header>
@@ -273,8 +273,29 @@ function processFile(file) {
       groups = [];
       for (const [custName, rows] of map.entries()) {
         const drTotal = rows.reduce((s,r) => { const v=parseFloat(r[10]); return s+(isNaN(v)?0:v); }, 0);
+
+        // 날짜: 원데이터 첫 행 C열(index 2) 그대로 사용
+        let accDate = '';
+        if (rows.length > 0) {
+          const dv = rows[0][2];
+          if (typeof dv === 'number') {
+            const d = XLSX.SSF.parse_date_code(dv);
+            accDate = `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+          } else if (typeof dv === 'string' && dv.includes('T')) {
+            accDate = dv.slice(0,10);
+          } else {
+            accDate = dv;
+          }
+        }
+
         const totalRow = Array(HEADERS_EN.length).fill('');
-        totalRow[11] = drTotal;
+        totalRow[0]  = 1;               // A: 숫자 1
+        totalRow[1]  = '뉴트리원';       // B: 뉴트리원
+        totalRow[2]  = accDate;          // C: 원데이터 날짜
+        totalRow[7]  = rows.length + 1; // H: 전표행순번 이어서
+        totalRow[8]  = '미지급금-기타';  // I: 계정과목
+        totalRow[11] = drTotal;          // L: 대변합계
+
         groups.push({custName, rows, totalRow, drTotal});
       }
 
