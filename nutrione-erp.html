@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutrione Admin — 광고비 마감</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #f5f6f8;
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      font-size: 14px;
+      color: #111;
+    }
+    header {
+      background: #007A6E;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 14px; font-weight: 700;
+    }
+    .logo-text { color: #fff; font-weight: 600; font-size: 15px; }
+    nav span {
+      color: rgba(255,255,255,0.95);
+      font-size: 13px; font-weight: 600;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 2px;
+    }
+    main { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+    h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .subtitle { color: #666; font-size: 13px; margin-bottom: 28px; }
+
+    /* 업로드 영역 */
+    #drop-zone {
+      border: 2px dashed #d0d5dd;
+      border-radius: 12px;
+      background: #fff;
+      padding: 52px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    #drop-zone.drag-over {
+      border-color: #007A6E;
+      background: rgba(0,122,110,0.04);
+    }
+    #drop-zone .icon { font-size: 36px; margin-bottom: 12px; }
+    #drop-zone .label { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
+    #drop-zone .hint { font-size: 12px; color: #999; }
+
+    .error-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #fff0f0;
+      border: 1px solid #fcc;
+      border-radius: 8px;
+      color: #c00;
+      font-size: 13px;
+    }
+
+    /* 결과 영역 */
+    #result { display: none; }
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .result-info { font-size: 13px; color: #888; }
+    .result-info span { color: #333; font-weight: 500; }
+    .result-info .count { color: #007A6E; font-weight: 600; margin-left: 12px; }
+    .btn-group { display: flex; gap: 8px; }
+    button {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: inherit;
+    }
+    .btn-reset {
+      border: 1px solid #d0d5dd;
+      background: #fff;
+      color: #555;
+    }
+    .btn-all {
+      border: none;
+      background: #007A6E;
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn-download {
+      padding: 7px 16px;
+      border: 1px solid #007A6E;
+      background: #fff;
+      color: #007A6E;
+      font-weight: 600;
+    }
+
+    /* 거래처 카드 */
+    .group-list { display: flex; flex-direction: column; gap: 8px; }
+    .group-card {
+      background: #fff;
+      border: 1px solid #e8eaed;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .group-left { display: flex; align-items: center; gap: 12px; }
+    .group-num {
+      width: 32px; height: 32px;
+      background: rgba(0,122,110,0.13);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #007A6E;
+      flex-shrink: 0;
+    }
+    .group-name { font-size: 14px; font-weight: 600; color: #111; }
+    .group-meta { font-size: 12px; color: #888; margin-top: 2px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">N</div>
+    <span class="logo-text">Nutrione Admin</span>
+  </div>
+  <nav><span>광고비 마감</span></nav>
+</header>
+
+<main>
+  <h1>광고비 마감 — ERP 업로드 파일 생성</h1>
+  <p class="subtitle">ERP 양식 엑셀을 업로드하면 거래처별로 분리된 파일을 생성합니다.</p>
+
+  <!-- 업로드 -->
+  <div id="upload-section">
+    <div id="drop-zone" onclick="document.getElementById('fileInput').click()">
+      <div class="icon">📂</div>
+      <div class="label">클릭하거나 파일을 드래그하세요</div>
+      <div class="hint">.xlsx 파일만 지원합니다</div>
+    </div>
+    <input id="fileInput" type="file" accept=".xlsx" style="display:none">
+    <div id="error-box" class="error-box" style="display:none"></div>
+  </div>
+
+  <!-- 결과 -->
+  <div id="result">
+    <div class="result-header">
+      <div class="result-info">
+        원본 파일: <span id="file-name"></span>
+        <span class="count" id="group-count"></span>
+      </div>
+      <div class="btn-group">
+        <button class="btn-reset" onclick="reset()">다시 업로드</button>
+        <button class="btn-all" onclick="downloadAll()">전체 다운로드</button>
+      </div>
+    </div>
+    <div class="group-list" id="group-list"></div>
+  </div>
+</main>
+
+<script>
+const HEADERS_EN = [
+  "SlipGroup","AccUnitName","AccDate","SlipUnitName","RegEmpName","RegDeptName",
+  "Remark","RowNo","AccName","UMCostTypeName","DrAmt","CrAmt","Summary",
+  "CustName","CostDeptName","CostCCtrName","CurrName","ExRate","DrForAmt",
+  "CrForAmt","TaxNoAlias","SupplyAmt","EvidName","SMNDVATKindName","NDVATAmt",
+  "CashDate","SMCashMethodName","OnSlipID","RemName1","RemValName1","RemName2",
+  "RemValName2","RemName3","RemValName3","RemName4","RemValName4","RemName5",
+  "RemValName5","CustNo"
+];
+const HEADERS_KO = [
+  "전표생성그룹","회계단위","회계일","전표관리단위","기표자","기표부서",
+  "비고","전표행순번","계정과목","비용구분","차변금액","대변금액","적요",
+  "거래처","귀속부서","코스트센터","통화","환율","외화차변금액",
+  "외화대변금액","사업자번호","공급가액","증빙","불공제구분","불공제세",
+  "출납예정일","출납방법","발생전표행번호","관리항목1","관리항목1값","관리항목2",
+  "관리항목2값","관리항목3","관리항목3값","관리항목4","관리항목4값","관리항목5",
+  "관리항목5값","거래처번호"
+];
+
+const COL_CONFIGS = [
+  {wch:17.25},{wch:8},{wch:12},{hidden:true},{hidden:true},{hidden:true},
+  {wch:31.375},{wch:17.25},{wch:17.25},{hidden:true},
+  {wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},
+  {wch:8},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},
+  {hidden:true},{hidden:true},{wch:8},{hidden:true},{hidden:true},{hidden:true},
+  {hidden:true},{wch:17.25},{hidden:true},{hidden:true},{hidden:true},{hidden:true},
+  {hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true}
+];
+
+const ACCT_FMT = '_-* #,##0_-;\\-* #,##0_-;_-* "-"_-;_-@_-';
+const CENTER_COLS = new Set([0,1,7]);
+
+const HDR1_S = {
+  fill:{patternType:"solid",fgColor:{rgb:"FFFF00"}},
+  font:{sz:10},
+  alignment:{horizontal:"center",vertical:"center"}
+};
+const HDR2_S = {
+  fill:{patternType:"solid",fgColor:{rgb:"44546A"}},
+  font:{sz:10,bold:true,color:{rgb:"FFFFFF"}},
+  alignment:{horizontal:"center",vertical:"center"}
+};
+
+function dataStyle(c, isTotal) {
+  const s = { font:{sz:10}, alignment:{horizontal: CENTER_COLS.has(c)?"center":"left", vertical:"center"} };
+  if (c===10) return {...s, numFmt:ACCT_FMT, alignment:{horizontal:"right",vertical:"center"}};
+  if (c===11 && isTotal) return {...s, numFmt:ACCT_FMT, alignment:{horizontal:"right",vertical:"center"}};
+  return s;
+}
+
+let groups = [];
+
+// 드래그앤드롭
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) processFile(f);
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) processFile(f);
+});
+
+function processFile(file) {
+  showError('');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSXStyle.read(e.target.result, {type:'array', cellDates:false});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const raw = XLSXStyle.utils.sheet_to_json(ws, {header:1, defval:''});
+
+      let dataStart = 2;
+      for (let i = 0; i < Math.min(raw.length, 5); i++) {
+        if (String(raw[i][0]).trim() === 'SlipGroup') { dataStart = i+2; break; }
+      }
+
+      const dataRows = raw.slice(dataStart).filter(r => r.some(c => c !== ''));
+      const map = new Map();
+      for (const row of dataRows) {
+        const cust = String(row[13]||'').trim();
+        if (!cust) continue;
+        if (!map.has(cust)) map.set(cust, []);
+        map.get(cust).push(row);
+      }
+
+      groups = [];
+      for (const [custName, rows] of map.entries()) {
+        const drTotal = rows.reduce((s,r) => { const v=parseFloat(r[10]); return s+(isNaN(v)?0:v); }, 0);
+        const totalRow = Array(HEADERS_EN.length).fill('');
+        totalRow[11] = drTotal;
+        groups.push({custName, rows, totalRow, drTotal});
+      }
+
+      renderResult(file.name);
+    } catch(err) {
+      showError('파일을 읽는 중 오류가 발생했습니다. 형식을 확인해주세요.');
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function renderResult(fileName) {
+  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('file-name').textContent = fileName;
+  document.getElementById('group-count').textContent = groups.length + '개 거래처';
+
+  const list = document.getElementById('group-list');
+  list.innerHTML = '';
+  groups.forEach((g, i) => {
+    const card = document.createElement('div');
+    card.className = 'group-card';
+    card.innerHTML = `
+      <div class="group-left">
+        <div class="group-num">${i+1}</div>
+        <div>
+          <div class="group-name">${g.custName}</div>
+          <div class="group-meta">${g.rows.length}행 · 차변합계 ${Math.round(g.drTotal).toLocaleString()}원</div>
+        </div>
+      </div>
+      <button class="btn-download" onclick="downloadGroup(${i})">다운로드</button>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function buildWorkbook(g) {
+  const wb = XLSXStyle.utils.book_new();
+  const processedRows = g.rows.map((row, idx) => {
+    const r = [...row];
+    r[7] = idx + 1; // 전표행순번 재카운팅
+    const dv = r[2];
+    if (dv !== '' && dv != null) {
+      if (typeof dv === 'number') {
+        const d = XLSXStyle.SSF.parse_date_code(dv);
+        r[2] = `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+      } else if (typeof dv === 'string' && dv.includes('T')) {
+        r[2] = dv.slice(0,10);
+      }
+    }
+    return r;
+  });
+
+  const sheetData = [HEADERS_EN, HEADERS_KO, ...processedRows, g.totalRow];
+  const ws = XLSXStyle.utils.aoa_to_sheet(sheetData);
+  ws['!cols'] = COL_CONFIGS;
+
+  const totalRowIdx = sheetData.length - 1;
+  const range = XLSXStyle.utils.decode_range(ws['!ref']);
+  for (let R = range.s.r; R <= range.e.r; R++) {
+    for (let C = range.s.c; C <= range.e.c; C++) {
+      const addr = XLSXStyle.utils.encode_cell({r:R, c:C});
+      if (!ws[addr]) ws[addr] = {t:'z', v:''};
+      if (R===0) ws[addr].s = HDR1_S;
+      else if (R===1) ws[addr].s = HDR2_S;
+      else {
+        const isTotal = R===totalRowIdx;
+        ws[addr].s = dataStyle(C, isTotal);
+        if ((C===10 || (C===11&&isTotal)) && typeof ws[addr].v==='number') ws[addr].t='n';
+      }
+    }
+  }
+  XLSXStyle.utils.book_append_sheet(wb, ws, 'Sheet1');
+  return wb;
+}
+
+function downloadGroup(i) {
+  const g = groups[i];
+  const wb = buildWorkbook(g);
+  const buf = XLSXStyle.write(wb, {bookType:'xlsx', type:'array'});
+  const blob = new Blob([buf], {type:'application/octet-stream'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `전표_${g.custName}.xlsx`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function downloadAll() { groups.forEach((_, i) => downloadGroup(i)); }
+
+function reset() {
+  groups = [];
+  document.getElementById('upload-section').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.style.display = msg ? 'block' : 'none';
+  el.textContent = msg ? '⚠️ ' + msg : '';
+}
+</script>
+</body>
+</html>
