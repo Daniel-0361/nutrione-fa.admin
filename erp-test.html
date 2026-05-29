@@ -324,14 +324,16 @@ async function runValidation() {
       if (missing.length > 0) missingErrors.push({ rowNum, missing });
     }
 
-    // 2. 고정값 시트 로드
+    // 2. 고정값 시트 로드 (JSON API)
     let fixedSets = null;
     try {
       const sheetName = encodeURIComponent('#고정값');
-      const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=' + sheetName;
+      const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=' + sheetName;
       const res = await fetch(url);
       const text = await res.text();
-      fixedSets = parseFixedValues(text);
+      // Google Sheets JSON 응답에서 /*O_o*/ 제거
+      const json = JSON.parse(text.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
+      fixedSets = parseFixedValuesFromJSON(json);
     } catch(e) {
       console.warn('고정값 시트 로드 실패:', e);
     }
@@ -357,6 +359,27 @@ async function runValidation() {
     btn.textContent = '검증 실행';
     btn.disabled = false;
   }
+}
+
+function parseFixedValuesFromJSON(json) {
+  const sets = {};
+  const rows = json.table.rows;
+
+  // 1행은 헤더, 2행부터 실제 데이터
+  for (let i = 1; i < rows.length; i++) {
+    const cols = rows[i].c || [];
+    for (const { sheetCol } of FIXED_CHECKS) {
+      if (!sets[sheetCol]) sets[sheetCol] = new Set();
+      const cell = cols[sheetCol];
+      const val = (cell && cell.v != null) ? String(cell.v).trim() : '';
+      if (val) sets[sheetCol].add(val);
+    }
+  }
+
+  for (const { sheetCol, label } of FIXED_CHECKS) {
+    console.log(label + ' 고정값:', [...(sets[sheetCol] || [])]);
+  }
+  return sets;
 }
 
 function parseCSVLine(line) {
