@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -393,21 +392,45 @@ async function runValidation() {
   }
 }
 
-function parseFixedValues(csvText) {
-  // CSV 파싱 (간단 버전)
-  const lines = csvText.split('\n').map(l => {
-    return l.split(',').map(v => v.replace(/^"|"$/g, '').trim());
-  });
+function parseCSVLine(line) {
+  const cols = [];
+  let cur = '', inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (ch === ',' && !inQuote) {
+      cols.push(cur.trim()); cur = '';
+    } else { cur += ch; }
+  }
+  cols.push(cur.trim());
+  return cols;
+}
 
-  // 4행(index 3)부터 데이터
+function parseFixedValues(csvText) {
+  const lines = csvText.split('\n');
   const sets = {};
+
+  console.log('CSV 1행:', parseCSVLine(lines[0] || ''));
+  console.log('CSV 4행:', parseCSVLine(lines[3] || ''));
+
   for (let i = 3; i < lines.length; i++) {
-    const cols = lines[i];
+    if (!lines[i].trim()) continue;
+    const cols = parseCSVLine(lines[i]);
     for (const { sheetCol } of FIXED_CHECKS) {
       if (!sets[sheetCol]) sets[sheetCol] = new Set();
       const val = (cols[sheetCol] || '').trim();
       if (val) sets[sheetCol].add(val);
     }
+  }
+
+  console.log('파싱된 고정값:');
+  for (const { sheetCol, label } of FIXED_CHECKS) {
+    console.log('  ' + label + ' (col' + sheetCol + '):', [...(sets[sheetCol]||[])]);
+  }
+  return sets;
+}
   }
   return sets;
 }
