@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <link rel="icon" href="favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FA Admin — 광고비 마감</title>
@@ -32,6 +31,18 @@
       color: #fff; font-size: 14px; font-weight: 700;
     }
     .logo-text { color: #fff; font-weight: 600; font-size: 15px; }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-email { color: rgba(255,255,255,0.85); font-size: 12px; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
     nav span {
       color: rgba(255,255,255,0.95);
       font-size: 13px; font-weight: 600;
@@ -41,6 +52,51 @@
     main { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
     h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
     .subtitle { color: #666; font-size: 13px; margin-bottom: 28px; }
+
+    /* 로그인 화면 */
+    #login-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 56px);
+    }
+    .login-card {
+      background: #fff;
+      border: 1px solid #e8eaed;
+      border-radius: 16px;
+      padding: 48px 40px;
+      text-align: center;
+      width: 360px;
+    }
+    .login-logo {
+      width: 56px; height: 56px;
+      background: #007A6E;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 24px; font-weight: 700; color: #fff;
+    }
+    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: #888; margin-bottom: 32px; }
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .btn-google:hover { background: #f5f6f8; }
+    .login-error { margin-top: 16px; font-size: 13px; color: #c00; }
 
     #drop-zone {
       border: 2px dashed #d0d5dd;
@@ -75,10 +131,8 @@
       justify-content: space-between;
     }
     .banner.fail { background: #fff0f0; border: 1px solid #fcc; }
-    .banner.success { background: #f0faf8; border: 1px solid #b2ddd6; }
     .banner-text { font-weight: 600; font-size: 14px; }
     .banner.fail .banner-text { color: #c00; }
-    .banner.success .banner-text { color: #007A6E; }
 
     .error-item {
       background: #fff;
@@ -145,53 +199,128 @@
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <div class="logo-icon">N</div>
-    <span class="logo-text">FA Admin</span>
+<!-- 로그인 화면 -->
+<div id="login-section">
+  <div class="login-card">
+    <div class="login-logo">N</div>
+    <div class="login-title">FA Admin</div>
+    <div class="login-sub">계속하려면 Google 계정으로 로그인하세요</div>
+    <button class="btn-google" onclick="loginWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+      Google 계정으로 로그인
+    </button>
+    <div class="login-error" id="login-error"></div>
   </div>
-  <nav><span>광고비 마감</span></nav>
-</header>
+</div>
 
-<main>
-  <h1>광고비 마감 — ERP 업로드 파일 생성</h1>
-  <p class="subtitle">ERP 양식 엑셀을 업로드하면 거래처별로 분리된 파일을 생성합니다.</p>
-
-  <!-- 업로드 -->
-  <div id="upload-section">
-    <div id="drop-zone" onclick="document.getElementById('fileInput').click()">
-      <div class="icon">📂</div>
-      <div class="label">클릭하거나 파일을 드래그하세요</div>
-      <div class="hint">.xlsx 파일만 지원합니다</div>
+<!-- 메인 앱 (로그인 후) -->
+<div id="app-section" style="display:none">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">N</div>
+      <span class="logo-text">FA Admin</span>
     </div>
-    <input id="fileInput" type="file" accept=".xlsx" style="display:none">
-    <div id="file-error-box" class="file-error-box" style="display:none"></div>
-  </div>
-
-  <!-- 검증 오류 화면 -->
-  <div id="validation-section" style="display:none">
-    <div class="banner fail">
-      <span class="banner-text" id="validation-banner-text"></span>
-      <button class="btn-reset" onclick="reset()">다시 업로드</button>
+    <div class="user-info">
+      <span class="user-email" id="user-email"></span>
+      <button class="btn-logout" onclick="logout()">로그아웃</button>
     </div>
-    <div id="validation-list" style="display:flex;flex-direction:column;gap:6px;"></div>
-  </div>
+  </header>
 
-  <!-- 결과 화면 -->
-  <div id="result" style="display:none">
-    <div class="result-header">
-      <div class="result-info">
-        원본 파일: <span id="file-name"></span>
-        <span class="count" id="group-count"></span>
+  <main>
+    <h1>광고비 마감 — ERP 업로드 파일 생성</h1>
+    <p class="subtitle">ERP 양식 엑셀을 업로드하면 거래처별로 분리된 파일을 생성합니다.</p>
+
+    <div id="upload-section">
+      <div id="drop-zone" onclick="document.getElementById('fileInput').click()">
+        <div class="icon">📂</div>
+        <div class="label">클릭하거나 파일을 드래그하세요</div>
+        <div class="hint">.xlsx 파일만 지원합니다</div>
       </div>
-      <div class="btn-group">
+      <input id="fileInput" type="file" accept=".xlsx" style="display:none">
+      <div id="file-error-box" class="file-error-box" style="display:none"></div>
+    </div>
+
+    <div id="validation-section" style="display:none">
+      <div class="banner fail">
+        <span class="banner-text" id="validation-banner-text"></span>
         <button class="btn-reset" onclick="reset()">다시 업로드</button>
-        <button class="btn-all" onclick="downloadAll()">전체 다운로드</button>
       </div>
+      <div id="validation-list" style="display:flex;flex-direction:column;gap:6px;"></div>
     </div>
-    <div class="group-list" id="group-list"></div>
-  </div>
-</main>
+
+    <div id="result" style="display:none">
+      <div class="result-header">
+        <div class="result-info">
+          원본 파일: <span id="file-name"></span>
+          <span class="count" id="group-count"></span>
+        </div>
+        <div class="btn-group">
+          <button class="btn-reset" onclick="reset()">다시 업로드</button>
+          <button class="btn-all" onclick="downloadAll()">전체 다운로드</button>
+        </div>
+      </div>
+      <div class="group-list" id="group-list"></div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBt03m_8O5Ij-jy-98xhQQFvfnEKJSseNU",
+  authDomain: "fa-admin-e19bc.firebaseapp.com",
+  projectId: "fa-admin-e19bc",
+  storageBucket: "fa-admin-e19bc.firebasestorage.app",
+  messagingSenderId: "781975549675",
+  appId: "1:781975549675:web:fb81ce19d50b298749b0ae",
+  measurementId: "G-4KLQ6SG22R"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// 허용 이메일 목록 (나중에 여기에 추가)
+const ALLOWED_EMAILS = [
+  // "millie@nutrione.co.kr",
+  // "example@gmail.com",
+];
+
+function isAllowed(email) {
+  // 목록이 비어있으면 모든 구글 계정 허용
+  if (ALLOWED_EMAILS.length === 0) return true;
+  return ALLOWED_EMAILS.includes(email);
+}
+
+window.loginWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const email = result.user.email;
+    if (!isAllowed(email)) {
+      await signOut(auth);
+      document.getElementById('login-error').textContent = '접근 권한이 없는 계정입니다.';
+    }
+  } catch (err) {
+    document.getElementById('login-error').textContent = '로그인 중 오류가 발생했습니다.';
+    console.error(err);
+  }
+};
+
+window.logout = () => signOut(auth);
+
+onAuthStateChanged(auth, (user) => {
+  if (user && isAllowed(user.email)) {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('app-section').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+  } else {
+    document.getElementById('login-section').style.display = 'flex';
+    document.getElementById('app-section').style.display = 'none';
+  }
+});
+</script>
 
 <script>
 const HEADERS_EN = [
@@ -213,7 +342,6 @@ const HEADERS_KO = [
   "관리항목5값","거래처번호"
 ];
 
-// 필수 열: 0-indexed, [컬럼인덱스, 열이름, 한글명]
 const REQUIRED_COLS = [
   [0,  'A', '전표생성그룹'],
   [1,  'B', '회계단위'],
@@ -293,15 +421,13 @@ function processFile(file) {
         if (String(raw[i][0]).trim() === 'SlipGroup') { dataStart = i+2; break; }
       }
 
-      // 빈 행 제거 + 원본 행 번호 유지
       const dataRows = [];
       for (let i = dataStart; i < raw.length; i++) {
         if (raw[i].some(c => c !== '')) {
-          dataRows.push({ row: raw[i], rowNum: i + 1 }); // rowNum: 엑셀 기준 행번호
+          dataRows.push({ row: raw[i], rowNum: i + 1 });
         }
       }
 
-      // 검증
       const errors = [];
       for (const { row, rowNum } of dataRows) {
         const missing = [];
@@ -311,9 +437,7 @@ function processFile(file) {
             missing.push(`${colLetter}열(${colName})`);
           }
         }
-        if (missing.length > 0) {
-          errors.push({ rowNum, missing });
-        }
+        if (missing.length > 0) errors.push({ rowNum, missing });
       }
 
       if (errors.length > 0) {
@@ -321,7 +445,6 @@ function processFile(file) {
         return;
       }
 
-      // 검증 통과 → 거래처 분리
       const map = new Map();
       for (const { row } of dataRows) {
         const cust = String(row[13]||'').trim();
@@ -371,10 +494,8 @@ function showValidationErrors(errors) {
   document.getElementById('upload-section').style.display = 'none';
   document.getElementById('result').style.display = 'none';
   document.getElementById('validation-section').style.display = 'block';
-
   document.getElementById('validation-banner-text').textContent =
     `검증 실패 — ${errors.length}개 행에서 누락된 데이터가 발견됐습니다. 수정 후 다시 업로드해주세요.`;
-
   const list = document.getElementById('validation-list');
   list.innerHTML = '';
   for (const { rowNum, missing } of errors) {
@@ -386,9 +507,10 @@ function showValidationErrors(errors) {
 }
 
 function renderResult(fileName) {
-  document.getElementById('upload-section').style.display = 'none';
+  document.getElementById('upload-section').style.display = 'block';
   document.getElementById('validation-section').style.display = 'none';
   document.getElementById('result').style.display = 'block';
+  document.getElementById('upload-section').style.display = 'none';
   document.getElementById('file-name').textContent = fileName;
   document.getElementById('group-count').textContent = groups.length + '개 거래처';
 
