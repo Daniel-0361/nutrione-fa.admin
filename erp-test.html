@@ -379,12 +379,8 @@ function parseFixedValues(csvText) {
   const lines = csvText.split('\n');
   const sets = {};
 
-  // 디버그
-  console.log('고정값 CSV 1행:', parseCSVLine(lines[0] || ''));
-  console.log('고정값 CSV 4행:', parseCSVLine(lines[3] || ''));
-
-  // 4행(index 3)부터 데이터
-  for (let i = 3; i < lines.length; i++) {
+  // 2행(index 1)부터 전체 스캔 - 컬럼별로 행수가 달라서 전체 읽어야 함
+  for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     const cols = parseCSVLine(lines[i]);
     for (const { sheetCol } of FIXED_CHECKS) {
