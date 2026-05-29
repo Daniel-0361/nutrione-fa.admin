@@ -475,8 +475,10 @@ function processFile(file) {
         totalRow[1]  = '뉴트리원';
         totalRow[2]  = accDate;
         totalRow[7]  = rows.length + 1;
-        totalRow[8]  = '미지급금-기타';
+        totalRow[8]  = '미지급비용-기타';
         totalRow[11] = drTotal;
+        totalRow[12] = custName;  // M열: 적요 = 거래처명
+        totalRow[13] = custName;  // N열: 거래처 = 거래처명
 
         groups.push({custName, rows, totalRow, drTotal});
       }
@@ -537,6 +539,7 @@ function buildWorkbook(g) {
   const wb = XLSX.utils.book_new();
   const processedRows = g.rows.map((row, idx) => {
     const r = [...row];
+    r[0] = 1;       // A열 전표생성그룹 고정
     r[7] = idx + 1;
     const dv = r[2];
     if (dv !== '' && dv != null) {
