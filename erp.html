@@ -413,7 +413,20 @@ function processFile(file) {
   reader.onload = e => {
     try {
       const wb = XLSX.read(e.target.result, {type:'array', cellDates:false});
-      const ws = wb.Sheets[wb.SheetNames[0]];
+
+      // SlipGroup 헤더가 있는 시트 자동 탐지
+      let ws = null;
+      for (const sheetName of wb.SheetNames) {
+        const s = wb.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(s, {header:1, defval:''});
+        const found = rows.slice(0, 5).some(r => String(r[0]).trim() === 'SlipGroup');
+        if (found) { ws = s; break; }
+      }
+      if (!ws) {
+        showFileError('SlipGroup 헤더가 있는 시트를 찾을 수 없습니다. 파일 형식을 확인해주세요.');
+        return;
+      }
+
       const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
 
       let dataStart = 2;
