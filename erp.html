@@ -7,194 +7,80 @@
   <script src="https://unpkg.com/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      background: #f5f6f8;
-      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-      font-size: 14px;
-      color: #111;
-    }
-    header {
-      background: #007A6E;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32px;
-    }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-icon {
-      width: 28px; height: 28px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 14px; font-weight: 700;
-    }
-    .logo-text { color: #fff; font-weight: 600; font-size: 15px; }
-    .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-email { color: rgba(255,255,255,0.85); font-size: 12px; }
-    .btn-logout {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    nav span {
-      color: rgba(255,255,255,0.95);
-      font-size: 13px; font-weight: 600;
-      border-bottom: 2px solid #fff;
-      padding-bottom: 2px;
-    }
-    main { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
-    h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
-    .subtitle { color: #666; font-size: 13px; margin-bottom: 28px; }
+    body { min-height:100vh; background:#f5f6f8; font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; font-size:14px; color:#111; }
+    header { background:#007A6E; height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 32px; }
+    .logo { display:flex; align-items:center; gap:12px; }
+    .logo-icon { width:28px; height:28px; background:rgba(255,255,255,0.2); border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:700; }
+    .logo-text { color:#fff; font-weight:600; font-size:15px; }
+    .user-info { display:flex; align-items:center; gap:12px; }
+    .user-email { color:rgba(255,255,255,0.85); font-size:12px; }
+    .btn-logout { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:inherit; }
+    main { max-width:860px; margin:0 auto; padding:40px 24px; }
+    h1 { font-size:22px; font-weight:700; letter-spacing:-0.5px; margin-bottom:6px; }
+    .subtitle { color:#666; font-size:13px; margin-bottom:28px; }
 
-    /* 로그인 화면 */
-    #login-section {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: calc(100vh - 56px);
-    }
-    .login-card {
-      background: #fff;
-      border: 1px solid #e8eaed;
-      border-radius: 16px;
-      padding: 48px 40px;
-      text-align: center;
-      width: 360px;
-    }
-    .login-logo {
-      width: 56px; height: 56px;
-      background: #007A6E;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 24px; font-weight: 700; color: #fff;
-    }
-    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-    .login-sub { font-size: 13px; color: #888; margin-bottom: 32px; }
-    .btn-google {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d0d5dd;
-      border-radius: 10px;
-      background: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-      cursor: pointer;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: background 0.15s;
-    }
-    .btn-google:hover { background: #f5f6f8; }
-    .login-error { margin-top: 16px; font-size: 13px; color: #c00; }
+    /* 로그인 */
+    #login-section { display:flex; align-items:center; justify-content:center; min-height:calc(100vh - 56px); }
+    .login-card { background:#fff; border:1px solid #e8eaed; border-radius:16px; padding:48px 40px; text-align:center; width:360px; }
+    .login-logo { width:56px; height:56px; background:#007A6E; border-radius:14px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:24px; font-weight:700; color:#fff; }
+    .login-title { font-size:20px; font-weight:700; margin-bottom:6px; }
+    .login-sub { font-size:13px; color:#888; margin-bottom:32px; }
+    .btn-google { width:100%; padding:12px; border:1px solid #d0d5dd; border-radius:10px; background:#fff; font-size:14px; font-weight:600; color:#333; cursor:pointer; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:10px; transition:background 0.15s; }
+    .btn-google:hover { background:#f5f6f8; }
+    .login-error { margin-top:16px; font-size:13px; color:#c00; }
 
-    #drop-zone {
-      border: 2px dashed #d0d5dd;
-      border-radius: 12px;
-      background: #fff;
-      padding: 52px 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    #drop-zone.drag-over { border-color: #007A6E; background: rgba(0,122,110,0.04); }
-    #drop-zone .icon { font-size: 36px; margin-bottom: 12px; }
-    #drop-zone .label { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 6px; }
-    #drop-zone .hint { font-size: 12px; color: #999; }
+    /* 업로드 */
+    #drop-zone { border:2px dashed #d0d5dd; border-radius:12px; background:#fff; padding:52px 24px; text-align:center; cursor:pointer; transition:all 0.15s ease; }
+    #drop-zone.drag-over { border-color:#007A6E; background:rgba(0,122,110,0.04); }
+    #drop-zone .icon { font-size:36px; margin-bottom:12px; }
+    #drop-zone .label { font-size:15px; font-weight:600; color:#333; margin-bottom:6px; }
+    #drop-zone .hint { font-size:12px; color:#999; }
 
-    .file-error-box {
-      margin-top: 16px;
-      padding: 12px 16px;
-      background: #fff0f0;
-      border: 1px solid #fcc;
-      border-radius: 8px;
-      color: #c00;
-      font-size: 13px;
-    }
+    /* 파일 미리보기 */
+    .file-preview { background:#fff; border:1px solid #e8eaed; border-radius:10px; padding:16px 20px; margin-top:12px; display:flex; align-items:center; justify-content:space-between; }
+    .file-preview-info .fname { font-size:14px; font-weight:600; color:#111; }
+    .file-preview-info .fmeta { font-size:12px; color:#888; margin-top:2px; }
+    .file-preview-actions { display:flex; gap:8px; }
 
-    .banner {
-      padding: 14px 20px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .banner.fail { background: #fff0f0; border: 1px solid #fcc; }
-    .banner-text { font-weight: 600; font-size: 14px; }
-    .banner.fail .banner-text { color: #c00; }
+    /* 공통 배너 */
+    .banner { padding:14px 20px; border-radius:10px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+    .banner.fail { background:#fff0f0; border:1px solid #fcc; }
+    .banner.success { background:#f0faf8; border:1px solid #b2ddd6; }
+    .banner.info { background:#f0f6ff; border:1px solid #b2ccf0; }
+    .banner-text { font-weight:600; font-size:14px; }
+    .banner.fail .banner-text { color:#c00; }
+    .banner.success .banner-text { color:#007A6E; }
+    .banner.info .banner-text { color:#1a56db; }
 
-    .error-item {
-      background: #fff;
-      border: 1px solid #fcc;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #333;
-    }
-    .error-item .row-label { font-weight: 600; color: #c00; margin-right: 8px; }
-    .error-item .missing { color: #888; }
+    /* 오류 아이템 */
+    .error-item { background:#fff; border:1px solid #fcc; border-radius:8px; padding:12px 16px; font-size:13px; color:#333; margin-bottom:6px; }
+    .error-item .row-label { font-weight:600; color:#c00; margin-right:8px; }
+    .error-item .missing { color:#888; }
 
-    .btn-group { display: flex; gap: 8px; }
-    button {
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 13px;
-      cursor: pointer;
-      font-weight: 500;
-      font-family: inherit;
-    }
-    .btn-reset { border: 1px solid #d0d5dd; background: #fff; color: #555; }
-    .btn-all { border: none; background: #007A6E; color: #fff; font-weight: 600; }
-    .btn-download {
-      padding: 7px 16px;
-      border: 1px solid #007A6E;
-      background: #fff;
-      color: #007A6E;
-      font-weight: 600;
-    }
+    /* 버튼 */
+    button { padding:8px 16px; border-radius:8px; font-size:13px; cursor:pointer; font-weight:500; font-family:inherit; }
+    .btn-reset { border:1px solid #d0d5dd; background:#fff; color:#555; }
+    .btn-primary { border:none; background:#007A6E; color:#fff; font-weight:600; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .btn-outline { border:1px solid #007A6E; background:#fff; color:#007A6E; font-weight:600; }
+    .btn-group { display:flex; gap:8px; }
+    .btn-loading { opacity:0.7; cursor:not-allowed; }
 
-    .result-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .result-info { font-size: 13px; color: #888; }
-    .result-info span { color: #333; font-weight: 500; }
-    .result-info .count { color: #007A6E; font-weight: 600; margin-left: 12px; }
+    /* 결과 */
+    .result-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .result-info { font-size:13px; color:#888; }
+    .result-info span { color:#333; font-weight:500; }
+    .result-info .count { color:#007A6E; font-weight:600; margin-left:12px; }
+    .group-list { display:flex; flex-direction:column; gap:8px; }
+    .group-card { background:#fff; border:1px solid #e8eaed; border-radius:10px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
+    .group-left { display:flex; align-items:center; gap:12px; }
+    .group-num { width:32px; height:32px; background:rgba(0,122,110,0.13); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#007A6E; flex-shrink:0; }
+    .group-name { font-size:14px; font-weight:600; color:#111; }
+    .group-meta { font-size:12px; color:#888; margin-top:2px; }
 
-    .group-list { display: flex; flex-direction: column; gap: 8px; }
-    .group-card {
-      background: #fff;
-      border: 1px solid #e8eaed;
-      border-radius: 10px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .group-left { display: flex; align-items: center; gap: 12px; }
-    .group-num {
-      width: 32px; height: 32px;
-      background: rgba(0,122,110,0.13);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: #007A6E;
-      flex-shrink: 0;
-    }
-    .group-name { font-size: 14px; font-weight: 600; color: #111; }
-    .group-meta { font-size: 12px; color: #888; margin-top: 2px; }
+    .file-error-box { margin-top:16px; padding:12px 16px; background:#fff0f0; border:1px solid #fcc; border-radius:8px; color:#c00; font-size:13px; }
+
+    .section { margin-bottom:24px; }
   </style>
 </head>
 <body>
@@ -213,7 +99,7 @@
   </div>
 </div>
 
-<!-- 메인 앱 (로그인 후) -->
+<!-- 메인 앱 -->
 <div id="app-section" style="display:none">
   <header>
     <div class="logo">
@@ -228,9 +114,10 @@
 
   <main>
     <h1>광고비 마감 — ERP 업로드 파일 생성</h1>
-    <p class="subtitle">ERP 양식 엑셀을 업로드하면 거래처별로 분리된 파일을 생성합니다.</p>
+    <p class="subtitle">파일 업로드 → 검증 → 분리저장 순서로 진행해주세요.</p>
 
-    <div id="upload-section">
+    <!-- STEP 1: 파일 업로드 -->
+    <div class="section">
       <div id="drop-zone" onclick="document.getElementById('fileInput').click()">
         <div class="icon">📂</div>
         <div class="label">클릭하거나 파일을 드래그하세요</div>
@@ -238,17 +125,34 @@
       </div>
       <input id="fileInput" type="file" accept=".xlsx" style="display:none">
       <div id="file-error-box" class="file-error-box" style="display:none"></div>
-    </div>
 
-    <div id="validation-section" style="display:none">
-      <div class="banner fail">
-        <span class="banner-text" id="validation-banner-text"></span>
-        <button class="btn-reset" onclick="reset()">다시 업로드</button>
+      <!-- 파일 미리보기 -->
+      <div id="file-preview" class="file-preview" style="display:none">
+        <div class="file-preview-info">
+          <div class="fname" id="preview-fname"></div>
+          <div class="fmeta" id="preview-fmeta"></div>
+        </div>
+        <div class="file-preview-actions">
+          <button class="btn-reset" onclick="reset()">다시 선택</button>
+          <button class="btn-primary" id="btn-validate" onclick="runValidation()">검증 실행</button>
+        </div>
       </div>
-      <div id="validation-list" style="display:flex;flex-direction:column;gap:6px;"></div>
     </div>
 
-    <div id="result" style="display:none">
+    <!-- STEP 2: 검증 결과 -->
+    <div id="validation-section" style="display:none" class="section">
+      <div class="banner" id="validation-banner">
+        <span class="banner-text" id="validation-banner-text"></span>
+        <div class="btn-group">
+          <button class="btn-reset" onclick="reset()">다시 업로드</button>
+          <button class="btn-primary" id="btn-split" onclick="runSplit()" style="display:none">분리저장</button>
+        </div>
+      </div>
+      <div id="validation-list"></div>
+    </div>
+
+    <!-- STEP 3: 분리저장 결과 -->
+    <div id="result" style="display:none" class="section">
       <div class="result-header">
         <div class="result-info">
           원본 파일: <span id="file-name"></span>
@@ -256,7 +160,7 @@
         </div>
         <div class="btn-group">
           <button class="btn-reset" onclick="reset()">다시 업로드</button>
-          <button class="btn-all" onclick="downloadAll()">전체 다운로드</button>
+          <button class="btn-primary" onclick="downloadAll()">전체 다운로드</button>
         </div>
       </div>
       <div class="group-list" id="group-list"></div>
@@ -282,14 +186,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// 허용 이메일 목록 (나중에 여기에 추가)
-const ALLOWED_EMAILS = [
-  // "millie@nutrione.co.kr",
-  // "example@gmail.com",
-];
+const ALLOWED_EMAILS = [];
 
 function isAllowed(email) {
-  // 목록이 비어있으면 모든 구글 계정 허용
   if (ALLOWED_EMAILS.length === 0) return true;
   return ALLOWED_EMAILS.includes(email);
 }
@@ -297,8 +196,7 @@ function isAllowed(email) {
 window.loginWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    const email = result.user.email;
-    if (!isAllowed(email)) {
+    if (!isAllowed(result.user.email)) {
       await signOut(auth);
       document.getElementById('login-error').textContent = '접근 권한이 없는 계정입니다.';
     }
@@ -323,24 +221,11 @@ onAuthStateChanged(auth, (user) => {
 </script>
 
 <script>
-const HEADERS_EN = [
-  "SlipGroup","AccUnitName","AccDate","SlipUnitName","RegEmpName","RegDeptName",
-  "Remark","RowNo","AccName","UMCostTypeName","DrAmt","CrAmt","Summary",
-  "CustName","CostDeptName","CostCCtrName","CurrName","ExRate","DrForAmt",
-  "CrForAmt","TaxNoAlias","SupplyAmt","EvidName","SMNDVATKindName","NDVATAmt",
-  "CashDate","SMCashMethodName","OnSlipID","RemName1","RemValName1","RemName2",
-  "RemValName2","RemName3","RemValName3","RemName4","RemValName4","RemName5",
-  "RemValName5","CustNo"
-];
-const HEADERS_KO = [
-  "전표생성그룹","회계단위","회계일","전표관리단위","기표자","기표부서",
-  "비고","전표행순번","계정과목","비용구분","차변금액","대변금액","적요",
-  "거래처","귀속부서","코스트센터","통화","환율","외화차변금액",
-  "외화대변금액","사업자번호","공급가액","증빙","불공제구분","불공제세",
-  "출납예정일","출납방법","발생전표행번호","관리항목1","관리항목1값","관리항목2",
-  "관리항목2값","관리항목3","관리항목3값","관리항목4","관리항목4값","관리항목5",
-  "관리항목5값","거래처번호"
-];
+const SHEET_ID = '1NMMEJKkiuXibbaxokCF33Y9frIGWp9oBIGPz9oXD_fA';
+const SHEET_NAME = encodeURIComponent('#고정값');
+
+const HEADERS_EN = ["SlipGroup","AccUnitName","AccDate","SlipUnitName","RegEmpName","RegDeptName","Remark","RowNo","AccName","UMCostTypeName","DrAmt","CrAmt","Summary","CustName","CostDeptName","CostCCtrName","CurrName","ExRate","DrForAmt","CrForAmt","TaxNoAlias","SupplyAmt","EvidName","SMNDVATKindName","NDVATAmt","CashDate","SMCashMethodName","OnSlipID","RemName1","RemValName1","RemName2","RemValName2","RemName3","RemValName3","RemName4","RemValName4","RemName5","RemValName5","CustNo"];
+const HEADERS_KO = ["전표생성그룹","회계단위","회계일","전표관리단위","기표자","기표부서","비고","전표행순번","계정과목","비용구분","차변금액","대변금액","적요","거래처","귀속부서","코스트센터","통화","환율","외화차변금액","외화대변금액","사업자번호","공급가액","증빙","불공제구분","불공제세","출납예정일","출납방법","발생전표행번호","관리항목1","관리항목1값","관리항목2","관리항목2값","관리항목3","관리항목3값","관리항목4","관리항목4값","관리항목5","관리항목5값","거래처번호"];
 
 const REQUIRED_COLS = [
   [0,  'A', '전표생성그룹'],
@@ -357,33 +242,30 @@ const REQUIRED_COLS = [
   [29, 'AD', '발생전표행번호'],
 ];
 
+// 고정값 매칭 컬럼: [업로드파일 col index, 시트 col index(0-based), 열이름, 한글명]
+// 고정값 시트: B열(1)=계정과목, E열(4)=거래처, G열(6)=코스트센터, J열(9)=브랜드
+// 업로드파일: I열(8)=계정과목, N열(13)=거래처, P열(15)=코스트센터, AD열(29)=브랜드
+const FIXED_CHECKS = [
+  { uploadCol: 8,  sheetCol: 1, label: 'I열(계정과목)' },
+  { uploadCol: 13, sheetCol: 4, label: 'N열(거래처)' },
+  { uploadCol: 15, sheetCol: 6, label: 'P열(코스트센터)' },
+  { uploadCol: 29, sheetCol: 9, label: 'AD열(브랜드)' },
+];
+
 const COL_CONFIGS = [
-  {wch:17.25},{wch:8},{wch:12},
-  {hidden:true},{hidden:true},{hidden:true},
-  {wch:31.375},{wch:17.25},{wch:17.25},
-  {hidden:true},
+  {wch:17.25},{wch:8},{wch:12},{hidden:true},{hidden:true},{hidden:true},
+  {wch:31.375},{wch:17.25},{wch:17.25},{hidden:true},
   {wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},{wch:17.25},
-  {hidden:true},
-  {hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},
-  {hidden:true},
-  {hidden:true},{hidden:true},{hidden:true},{hidden:true},
+  {hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},
+  {hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},
   {wch:17.25},
   {hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true},{hidden:true}
 ];
 
 const ACCT_FMT = '_-* #,##0_-;\\-* #,##0_-;_-* "-"_-;_-@_-';
 const CENTER_COLS = new Set([0,1,7]);
-
-const HDR1_S = {
-  fill:{patternType:"solid",fgColor:{rgb:"FFFF00"}},
-  font:{sz:10},
-  alignment:{horizontal:"center",vertical:"center"}
-};
-const HDR2_S = {
-  fill:{patternType:"solid",fgColor:{rgb:"C6E0B4"}},
-  font:{sz:10,bold:true,color:{rgb:"000000"}},
-  alignment:{horizontal:"center",vertical:"center"}
-};
+const HDR1_S = { fill:{patternType:"solid",fgColor:{rgb:"FFFF00"}}, font:{sz:10}, alignment:{horizontal:"center",vertical:"center"} };
+const HDR2_S = { fill:{patternType:"solid",fgColor:{rgb:"C6E0B4"}}, font:{sz:10,bold:true,color:{rgb:"000000"}}, alignment:{horizontal:"center",vertical:"center"} };
 
 function dataStyle(c, isTotal) {
   const s = { font:{sz:10}, alignment:{horizontal: CENTER_COLS.has(c)?"center":"left", vertical:"center"} };
@@ -392,141 +274,221 @@ function dataStyle(c, isTotal) {
   return s;
 }
 
+let uploadedDataRows = [];
+let uploadedFileName = '';
 let groups = [];
 
+// 드래그앤드롭
 const dz = document.getElementById('drop-zone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
 dz.addEventListener('drop', e => {
   e.preventDefault(); dz.classList.remove('drag-over');
-  const f = e.dataTransfer.files[0];
-  if (f) processFile(f);
+  const f = e.dataTransfer.files[0]; if (f) loadFile(f);
 });
 document.getElementById('fileInput').addEventListener('change', e => {
-  const f = e.target.files[0];
-  if (f) processFile(f);
+  const f = e.target.files[0]; if (f) loadFile(f);
 });
 
-function processFile(file) {
+function loadFile(file) {
   showFileError('');
+  uploadedDataRows = [];
+  groups = [];
   const reader = new FileReader();
   reader.onload = e => {
     try {
       const wb = XLSX.read(e.target.result, {type:'array', cellDates:false});
 
-      // SlipGroup 헤더가 있는 시트 자동 탐지
+      // SlipGroup 헤더 있는 시트 자동 탐지
       let ws = null;
-      for (const sheetName of wb.SheetNames) {
-        const s = wb.Sheets[sheetName];
+      for (const sn of wb.SheetNames) {
+        const s = wb.Sheets[sn];
         const rows = XLSX.utils.sheet_to_json(s, {header:1, defval:''});
-        const found = rows.slice(0, 5).some(r => String(r[0]).trim() === 'SlipGroup');
-        if (found) { ws = s; break; }
+        if (rows.slice(0,5).some(r => String(r[0]).trim() === 'SlipGroup')) { ws = s; break; }
       }
-      if (!ws) {
-        showFileError('SlipGroup 헤더가 있는 시트를 찾을 수 없습니다. 파일 형식을 확인해주세요.');
-        return;
-      }
+      if (!ws) { showFileError('SlipGroup 헤더가 있는 시트를 찾을 수 없습니다.'); return; }
 
       const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-
       let dataStart = 2;
       for (let i = 0; i < Math.min(raw.length, 5); i++) {
         if (String(raw[i][0]).trim() === 'SlipGroup') { dataStart = i+2; break; }
       }
 
-      const dataRows = [];
+      uploadedDataRows = [];
       for (let i = dataStart; i < raw.length; i++) {
         if (raw[i].some(c => c !== '')) {
-          dataRows.push({ row: raw[i], rowNum: i + 1 });
+          uploadedDataRows.push({ row: raw[i], rowNum: i+1 });
         }
       }
 
-      const errors = [];
-      for (const { row, rowNum } of dataRows) {
-        const missing = [];
-        for (const [colIdx, colLetter, colName] of REQUIRED_COLS) {
-          const val = row[colIdx];
-          if (val === '' || val === null || val === undefined) {
-            missing.push(`${colLetter}열(${colName})`);
-          }
-        }
-        if (missing.length > 0) errors.push({ rowNum, missing });
-      }
-
-      if (errors.length > 0) {
-        showValidationErrors(errors);
-        return;
-      }
-
-      const map = new Map();
-      for (const { row } of dataRows) {
-        const cust = String(row[13]||'').trim();
-        if (!cust) continue;
-        if (!map.has(cust)) map.set(cust, []);
-        map.get(cust).push(row);
-      }
-
-      groups = [];
-      for (const [custName, rows] of map.entries()) {
-        const drTotal = rows.reduce((s,r) => { const v=parseFloat(r[10]); return s+(isNaN(v)?0:v); }, 0);
-
-        let accDate = '';
-        if (rows.length > 0) {
-          const dv = rows[0][2];
-          if (typeof dv === 'number') {
-            const d = XLSX.SSF.parse_date_code(dv);
-            accDate = `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
-          } else if (typeof dv === 'string' && dv.includes('T')) {
-            accDate = dv.slice(0,10);
-          } else {
-            accDate = dv;
-          }
-        }
-
-        const totalRow = Array(HEADERS_EN.length).fill('');
-        totalRow[0]  = 1;
-        totalRow[1]  = '뉴트리원';
-        totalRow[2]  = accDate;
-        totalRow[7]  = rows.length + 1;
-        totalRow[8]  = '미지급비용-기타';
-        totalRow[11] = drTotal;
-        totalRow[12] = custName;  // M열: 적요 = 거래처명
-        totalRow[13] = custName;  // N열: 거래처 = 거래처명
-
-        groups.push({custName, rows, totalRow, drTotal});
-      }
-
-      renderResult(file.name);
+      uploadedFileName = file.name;
+      document.getElementById('drop-zone').style.display = 'none';
+      document.getElementById('file-preview').style.display = 'flex';
+      document.getElementById('preview-fname').textContent = file.name;
+      document.getElementById('preview-fmeta').textContent = `데이터 ${uploadedDataRows.length}행`;
+      document.getElementById('validation-section').style.display = 'none';
+      document.getElementById('result').style.display = 'none';
     } catch(err) {
-      showFileError('파일을 읽는 중 오류가 발생했습니다. 형식을 확인해주세요.');
+      showFileError('파일을 읽는 중 오류가 발생했습니다.');
       console.error(err);
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-function showValidationErrors(errors) {
-  document.getElementById('upload-section').style.display = 'none';
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('validation-section').style.display = 'block';
-  document.getElementById('validation-banner-text').textContent =
-    `검증 실패 — ${errors.length}개 행에서 누락된 데이터가 발견됐습니다. 수정 후 다시 업로드해주세요.`;
-  const list = document.getElementById('validation-list');
-  list.innerHTML = '';
-  for (const { rowNum, missing } of errors) {
-    const item = document.createElement('div');
-    item.className = 'error-item';
-    item.innerHTML = `<span class="row-label">${rowNum}행</span><span class="missing">${missing.join(', ')} 값이 비어있습니다</span>`;
-    list.appendChild(item);
+async function runValidation() {
+  const btn = document.getElementById('btn-validate');
+  btn.textContent = '검증 중...';
+  btn.classList.add('btn-loading');
+  btn.disabled = true;
+
+  try {
+    // 1. 필수열 검증
+    const missingErrors = [];
+    for (const { row, rowNum } of uploadedDataRows) {
+      const missing = [];
+      for (const [colIdx, colLetter, colName] of REQUIRED_COLS) {
+        const val = row[colIdx];
+        if (val === '' || val === null || val === undefined) {
+          missing.push(`${colLetter}열(${colName})`);
+        }
+      }
+      if (missing.length > 0) missingErrors.push({ rowNum, missing, type: 'missing' });
+    }
+
+    // 2. 고정값 시트 가져오기
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+    let fixedSets = null;
+    try {
+      const res = await fetch(csvUrl);
+      const text = await res.text();
+      fixedSets = parseFixedValues(text);
+    } catch(e) {
+      console.error('고정값 시트 로드 실패:', e);
+    }
+
+    // 3. 고정값 매칭 검증
+    const fixedErrors = [];
+    if (fixedSets) {
+      for (const { row, rowNum } of uploadedDataRows) {
+        const invalid = [];
+        for (const { uploadCol, sheetCol, label } of FIXED_CHECKS) {
+          const val = String(row[uploadCol] || '').trim();
+          if (!val) continue; // 빈값은 필수열 검증에서 처리
+          const validSet = fixedSets[sheetCol];
+          if (validSet && !validSet.has(val)) {
+            invalid.push(`${label}: "${val}"`);
+          }
+        }
+        if (invalid.length > 0) fixedErrors.push({ rowNum, invalid, type: 'fixed' });
+      }
+    }
+
+    showValidationResult(missingErrors, fixedErrors, fixedSets !== null);
+  } finally {
+    btn.textContent = '검증 실행';
+    btn.classList.remove('btn-loading');
+    btn.disabled = false;
   }
 }
 
-function renderResult(fileName) {
-  document.getElementById('upload-section').style.display = 'block';
+function parseFixedValues(csvText) {
+  // CSV 파싱 (간단 버전)
+  const lines = csvText.split('\n').map(l => {
+    return l.split(',').map(v => v.replace(/^"|"$/g, '').trim());
+  });
+
+  // 4행(index 3)부터 데이터
+  const sets = {};
+  for (let i = 3; i < lines.length; i++) {
+    const cols = lines[i];
+    for (const { sheetCol } of FIXED_CHECKS) {
+      if (!sets[sheetCol]) sets[sheetCol] = new Set();
+      const val = (cols[sheetCol] || '').trim();
+      if (val) sets[sheetCol].add(val);
+    }
+  }
+  return sets;
+}
+
+function showValidationResult(missingErrors, fixedErrors, sheetLoaded) {
+  const allErrors = [...missingErrors, ...fixedErrors];
+  const section = document.getElementById('validation-section');
+  const banner = document.getElementById('validation-banner');
+  const bannerText = document.getElementById('validation-banner-text');
+  const list = document.getElementById('validation-list');
+  const btnSplit = document.getElementById('btn-split');
+
+  section.style.display = 'block';
+  list.innerHTML = '';
+
+  if (allErrors.length === 0) {
+    banner.className = 'banner success';
+    bannerText.textContent = `검증 완료 — 이상 없습니다. 분리저장을 진행해주세요.${!sheetLoaded ? ' (고정값 시트 연결 실패로 항목 검증 제외)' : ''}`;
+    btnSplit.style.display = 'inline-block';
+  } else {
+    banner.className = 'banner fail';
+    bannerText.textContent = `검증 실패 — ${allErrors.length}개 행에서 오류가 발견됐습니다. 수정 후 다시 업로드해주세요.`;
+    btnSplit.style.display = 'none';
+
+    for (const err of allErrors) {
+      const item = document.createElement('div');
+      item.className = 'error-item';
+      if (err.type === 'missing') {
+        item.innerHTML = `<span class="row-label">${err.rowNum}행</span><span class="missing">${err.missing.join(', ')} 값이 비어있습니다</span>`;
+      } else {
+        item.innerHTML = `<span class="row-label">${err.rowNum}행</span><span class="missing">고정값 불일치 — ${err.invalid.join(', ')}</span>`;
+      }
+      list.appendChild(item);
+    }
+  }
+}
+
+function runSplit() {
+  // 거래처 분리
+  const map = new Map();
+  for (const { row } of uploadedDataRows) {
+    const cust = String(row[13]||'').trim();
+    if (!cust) continue;
+    if (!map.has(cust)) map.set(cust, []);
+    map.get(cust).push(row);
+  }
+
+  groups = [];
+  for (const [custName, rows] of map.entries()) {
+    const drTotal = rows.reduce((s,r) => { const v=parseFloat(r[10]); return s+(isNaN(v)?0:v); }, 0);
+
+    let accDate = '';
+    if (rows.length > 0) {
+      const dv = rows[0][2];
+      if (typeof dv === 'number') {
+        const d = XLSX.SSF.parse_date_code(dv);
+        accDate = `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`;
+      } else if (typeof dv === 'string' && dv.includes('T')) {
+        accDate = dv.slice(0,10);
+      } else { accDate = dv; }
+    }
+
+    const totalRow = Array(HEADERS_EN.length).fill('');
+    totalRow[0]  = 1;
+    totalRow[1]  = '뉴트리원';
+    totalRow[2]  = accDate;
+    totalRow[7]  = rows.length + 1;
+    totalRow[8]  = '미지급비용-기타';
+    totalRow[11] = drTotal;
+    totalRow[12] = custName;
+    totalRow[13] = custName;
+
+    groups.push({custName, rows, totalRow, drTotal});
+  }
+
+  renderResult();
+}
+
+function renderResult() {
   document.getElementById('validation-section').style.display = 'none';
   document.getElementById('result').style.display = 'block';
-  document.getElementById('upload-section').style.display = 'none';
-  document.getElementById('file-name').textContent = fileName;
+  document.getElementById('file-name').textContent = uploadedFileName;
   document.getElementById('group-count').textContent = groups.length + '개 거래처';
 
   const list = document.getElementById('group-list');
@@ -542,7 +504,7 @@ function renderResult(fileName) {
           <div class="group-meta">${g.rows.length}행 · 차변합계 ${Math.round(g.drTotal).toLocaleString()}원</div>
         </div>
       </div>
-      <button class="btn-download" onclick="downloadGroup(${i})">다운로드</button>
+      <button class="btn-outline" onclick="downloadGroup(${i})">다운로드</button>
     `;
     list.appendChild(card);
   });
@@ -552,7 +514,7 @@ function buildWorkbook(g) {
   const wb = XLSX.utils.book_new();
   const processedRows = g.rows.map((row, idx) => {
     const r = [...row];
-    r[0] = 1;       // A열 전표생성그룹 고정
+    r[0] = 1;
     r[7] = idx + 1;
     const dv = r[2];
     if (dv !== '' && dv != null) {
@@ -581,7 +543,7 @@ function buildWorkbook(g) {
       else {
         const isTotal = R===totalRowIdx;
         ws[addr].s = dataStyle(C, isTotal);
-        if ((C===10 || (C===11&&isTotal)) && typeof ws[addr].v==='number') ws[addr].t='n';
+        if ((C===10||(C===11&&isTotal)) && typeof ws[addr].v==='number') ws[addr].t='n';
       }
     }
   }
@@ -603,11 +565,13 @@ function downloadGroup(i) {
 function downloadAll() { groups.forEach((_, i) => downloadGroup(i)); }
 
 function reset() {
-  groups = [];
-  document.getElementById('upload-section').style.display = 'block';
+  uploadedDataRows = []; groups = []; uploadedFileName = '';
+  document.getElementById('drop-zone').style.display = 'block';
+  document.getElementById('file-preview').style.display = 'none';
   document.getElementById('validation-section').style.display = 'none';
   document.getElementById('result').style.display = 'none';
   document.getElementById('fileInput').value = '';
+  showFileError('');
 }
 
 function showFileError(msg) {
